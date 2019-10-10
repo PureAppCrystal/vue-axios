@@ -40,7 +40,7 @@ export default {
   methods: {
     login: function () {
       console.log("====== Login ====== ")
-
+      //test
       let form = new FormData();
       form.append("username", "manager");
       form.append("password", "manager");
