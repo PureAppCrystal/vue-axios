@@ -1,40 +1,144 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <div id="state">
+      <p> Login 상태 : {{logined ? "로그인" : "로그아웃"}} </p>
+      
+      <button v-on:click="login"> Login </button>
+      <button v-on:click="logout"> Logout </button>
+    </div>
+
+    
+    <div id="request" >
+      <p> 요청결과 : {{ request ? "성공" : "실패"}} </p>
+      <p> {{message}} </p>
+      <button v-on:click="guest"> Guest </button>
+      <button v-on:click="member"> member </button>
+      <button v-on:click="manager"> manager </button>
+      <button v-on:click="admin"> admin </button>
+    </div>
+    
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'HelloWorld',
   props: {
     msg: String
+  },
+  data: () => {
+    return {
+      logined: false,
+      request: false,
+      message: "hello",
+
+    }
+  },
+  methods: {
+    login: function () {
+      console.log("====== Login ====== ")
+
+      let form = new FormData();
+      form.append("username", "manager");
+      form.append("password", "manager");
+      console.log("form : ", form)
+
+      let data = {
+        username: "manager",
+        password: "manager"
+      }
+      console.log("data : ", data)
+
+      axios.post("http://localhost:8000/api/login" , data)
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+          return this.request = true;
+        })
+        .catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+    },
+    logout: function() {
+      console.log("====== Logout ====== ")
+          axios.post("http://localhost:8000/logout" , {
+        user: 'admin',
+        password: '1234'
+      })
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+          return this.request = true;
+        })
+        .catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+    },
+    guest: function() {
+      console.log("====== Guest ====== ")
+      axios.get("http://localhost:8000/api/guest")
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+          return this.request = true;
+        })
+        .catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+        
+    },  
+    member: function() {
+      console.log("====== member ====== ")
+      axios.get("http://localhost:8000/api/member")
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+        }).catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+        
+    },
+    manager: function() {
+      console.log("====== manager ====== ")
+      axios.get("http://localhost:8000/api/manager")
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+        }).catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+        
+    },
+    admin: function() {
+      console.log("====== admin ====== ")
+      axios.get("http://localhost:8000/api/admin")
+        .then(res => {
+          console.log("res : ", res);
+          this.message = res;
+        }).catch( e=> {
+          console.log("err : ", e)
+          this.message = e;
+        })
+        
+    },
+    
+  },
+  created () {
+    console.log("====== HelloWorld created ======")
+    // axios.get("http://localhost:8000/api/guest")
+    //   .then(res => {
+    //     console.log("res : ", res);
+    //     this.message = res;
+    //   })
+      
   }
 }
 </script>
@@ -54,5 +158,14 @@ li {
 }
 a {
   color: #42b983;
+}
+
+
+#state {
+  margin: 1rem;
+}
+
+#request {
+  margin: 1rem;
 }
 </style>
